@@ -7,7 +7,6 @@ import uuid
 from app import Base
 import jwt
 from datetime import datetime, timedelta
-from .schemas.schemas_monitoring import monitoring_save
 
 class ControllerMonitoring:
 
@@ -17,12 +16,12 @@ class ControllerMonitoring:
 
     def save(self, data):
         monitoring = Monitoring()
-        
+
         sensor_uid = data.get("uid") 
-        sensor = Sensor.query.filter_by(sensor_uid = sensor_uid).first()
+        sensor = Sensor.query.filter_by(uid=sensor_uid).first()
         
         if sensor:
-            if data["start_date"] and data["end_date"]:
+            if data.get("start_date") and data.get("end_date"):
                 start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
                 end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
                 
@@ -31,7 +30,7 @@ class ControllerMonitoring:
                     monitoring.longitude = data['longitude']
                     monitoring.start_date = start_date
                     monitoring.end_date = end_date
-                    monitoring.data = data['data']
+                    monitoring.data = float(data['data'])  # Convertir data a float
                     monitoring.uid = uuid.uuid4()
 
                     monitoring.sensor_id = sensor.id
@@ -43,8 +42,8 @@ class ControllerMonitoring:
             else:
                 return -2  # Las fechas no están presentes en los datos
         else:
-            return -3 # No se encontró el sensor con el uid proporcionado
-        
+            return -3 # No se encontró el sensor con el uid proporcionado        
+
 
 
     def modify(self, uid, data):
