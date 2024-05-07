@@ -36,7 +36,7 @@ class Sensor(Base.Model):
             'name'         : self.name,
             'status'       : self.status,
             'element_type' : self.element_type,
-            'ip'           : self.last_name,
+            'ip'           : self.ip,
         }
     
     

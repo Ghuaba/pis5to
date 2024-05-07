@@ -10,7 +10,7 @@ class ControllerTest():
             'msg': 'OK',
             'status_code' : 200,
         }
-        
+'''   
     def create_test():
         person = Person()
         
@@ -25,4 +25,4 @@ class ControllerTest():
         Base.session.commit()
         
         return person.uid
-        
+       ''' 
