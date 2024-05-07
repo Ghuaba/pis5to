@@ -11,12 +11,14 @@ class ControllerSensor():
     
     def saveSensor(self,data):
         sensor= Sensor()
-        person = Person.query.filter_by(uid=data["uid"]).first()
+        person = Person.query.filter_by(uid=data["person"]).first()
         if person:
             sensor.ip = data['ip']
-            sensor.element_type = data['element_type']
+            sensor.element_type = data['element_type']            
+            sensor.name = data['name']
+
             sensor.status = True
-            sensor.uid = uuid.uuid4
+            #sensor.uid = uuid.uuid4
             sensor.person_id= person.id
             Base.session.add(sensor)
             Base.session.commit()

@@ -22,7 +22,7 @@ def listMonitoring():
 
 
 @url_monitoring.route('/monitoring/save', methods = ["POST"])
-@expects_json(schema)
+@expects_json(schema_save)
 def saveMonitoring():
     data = request.json  # Supongamos que recibes los datos en formato JSON
     m = monitoringC.save(data=data)
@@ -36,4 +36,4 @@ def saveMonitoring():
             jsonify({"msg": "ERROR", "code": 400, "datos": {"error": Errors.error.get(str(c))}}),
             400
         )
-    
+
