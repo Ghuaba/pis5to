@@ -18,9 +18,13 @@ def create_app():
     with app.app_context():
         # import routes
         from routes.route_test import url_test
-        
+        from routes.route_person import api_persona
+
         # add routes
         app.register_blueprint(url_test)
+        app.register_blueprint(api_persona)
+        
+
         
         # import all models
         init_tables.init()    

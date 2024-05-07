@@ -25,4 +25,3 @@ class ControllerTest():
         Base.session.commit()
         
         return person.uid
-        
