@@ -14,5 +14,4 @@ class Errors:
         '-13': "No existe cuenta",
         '-14': "No tiene el token",
         '-15': "Token no valido",
-
     }

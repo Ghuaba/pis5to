@@ -17,13 +17,20 @@ def create_app():
     
     with app.app_context():
         # import routes
-        #from routes.route_test import url_test
+        from routes.route_test import url_test
+        from routes.route_monitoring import url_monitoring
+
+        
+        # add routes
+        app.register_blueprint(url_test)
+        app.register_blueprint(url_monitoring)
         from routes.route_sensor import url_sensor
 
         # add routes
        # app.register_blueprint(url_test)
         app.register_blueprint(url_sensor)
-
+        # import all models
+        init_tables.init()    
         # import all models
         init_tables.init()    
         
