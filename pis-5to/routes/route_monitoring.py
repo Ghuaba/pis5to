@@ -2,10 +2,8 @@ from flask import Blueprint, jsonify, make_response, request
 #from controllers.utils.errors import Errors
 from flask_expects_json import expects_json
 from controllers.utils.errors import Errors
-
-
 from controllers.controller_monitoring import ControllerMonitoring
-from .schemas.schemas_monitoring import schema_save
+from .schemas.schemas_monitoring import monitoring_save
 
 url_monitoring = Blueprint('url_monitoring', __name__)
 
@@ -22,7 +20,7 @@ def listMonitoring():
 
 
 @url_monitoring.route('/monitoring/save', methods = ["POST"])
-@expects_json(schema)
+@expects_json(monitoring_save)
 def saveMonitoring():
     data = request.json  # Supongamos que recibes los datos en formato JSON
     m = monitoringC.save(data=data)
@@ -33,7 +31,7 @@ def saveMonitoring():
         )
     else:
         return make_response(
-            jsonify({"msg": "ERROR", "code": 400, "datos": {"error": Errors.error.get(str(c))}}),
+            jsonify({"msg": "ERROR", "code": 400, "datos": {"error": Errors.error.get(str(-1))}}),
             400
         )
     
