@@ -10,7 +10,7 @@ class Errors:
         '-9': "No hay personas censadas",
         '-10': "La fecha de fin debe ser posterior a la de inicio",
         '-11': "No existe la persona",
-        '-12': "No ingreso fecha de inicio",
+        '-12': "No existe el sensor solicitado",
         '-13': "No existe cuenta",
         '-14': "No tiene el token",
         '-15': "Token no valido",

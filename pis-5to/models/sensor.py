@@ -32,11 +32,11 @@ class Sensor(Base.Model):
     @property
     def serialize(self):
         return {
-            'uid'          : self.uid,
-            'name'         : self.name,
-            'status'       : self.status,
-            'element_type' : self.element_type,
-            'ip'           : self.ip,
+            'uid': self.uid,
+            'name': self.name,
+            'status': self.status,
+            'element_type': str(self.element_type),  # Convertir a cadena
+            'ip': self.ip,
         }
     
     
