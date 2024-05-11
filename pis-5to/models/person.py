@@ -38,7 +38,6 @@ class Person(Base.Model):
         }
     
     def copy(self):
-    
         copy_person = Person(
             id        = self.id,
             uid       = self.uid,

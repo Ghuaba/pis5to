@@ -19,11 +19,13 @@ def create_app():
         # import routes
         from routes.route_test import url_test
         from routes.route_monitoring import url_monitoring
+        from routes.route_person import api_persona
 
         
         # add routes
         app.register_blueprint(url_test)
         app.register_blueprint(url_monitoring)
+        app.register_blueprint(api_persona)
         from routes.route_sensor import url_sensor
 
         # add routes
