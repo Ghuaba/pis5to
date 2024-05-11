@@ -1,6 +1,5 @@
 class Errors:
     error = {
-<<<<<<< HEAD
         '-1': "NO estan las fechas correctas",
         '-2': "Este correo ya está en uso",
         '-3': "Este correo no es válido",
