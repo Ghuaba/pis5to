@@ -16,11 +16,11 @@ class PersonaControl():
         dni = Person.query.filter_by(dni = data['dni']).first()
 
         if correo:
-            return -2
+            return -41
         elif dni:
-            return -7
+            return -42
         elif len(data['dni']) > 10:
-          return -8
+          return -42
         else:  
 
             persona = Person()
@@ -43,9 +43,9 @@ class PersonaControl():
         if persona:
             dni = Person.query.filter_by(dni = data['dni']).first()
             if dni:
-                return -2
+                return -41
             elif len(data['dni']) > 10:
-                return -8
+                return -42
             else:
                 persona.uid = uuid.uuid4()
                 persona.name = data['name'] 
@@ -55,14 +55,14 @@ class PersonaControl():
                 Base.session.commit()
                 return persona.id
         else:
-            return -1
+            return -40
         
     def modificarCorreoPersona(self, uid, data):
         persona = Person.query.filter_by(uid=uid).first()
         if persona:
             correo = Person.query.filter_by(email = data['email']).first()
             if correo:
-                return -2
+                return -41
             else:
                 persona.uid = uuid.uuid4()
                 persona.email = data['email'] 
@@ -71,7 +71,7 @@ class PersonaControl():
                 Base.session.commit()
                 return persona.id
         else:
-            return -1
+            return -40
         
     def buscarPersona(delf, cedula):
         persona = Person.query.filter_by(dni=cedula).first()
@@ -83,7 +83,7 @@ class PersonaControl():
             }
             return info
         else:
-            return -1
+            return -40
         
     def cambiar_estado_persona(self, uid):
         persona = Person.query.filter_by(uid=uid).first()
@@ -100,7 +100,7 @@ class PersonaControl():
                 Base.session.commit()
                 return id
             except:
-                return -1
+                return -40
         else:
-            return -1   
+            return -40
         
