@@ -1,2 +1,3 @@
 /virtual
-/config
+.gitignore
+/__pycache__

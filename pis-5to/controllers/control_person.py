@@ -4,6 +4,7 @@ from app import Base
 import jwt
 from datetime import datetime, timedelta
 from flask import current_app
+from .utils.errors import Errors
 
 class PersonaControl():
 
@@ -104,3 +105,28 @@ class PersonaControl():
         else:
             return -1   
         
+    
+    def login(values):
+            
+        person = Person.query.filter_by(email = values['email']).first()
+            
+        if not person:
+            return {'msg': 'error', 'code' : 400, 'data': {'error' : Errors.error[str(-11)]}}
+            
+        if person.password != values['password']:
+            return {'msg': 'error', 'code' : 400, 'data': {'error' : Errors.error[str(-11)]}}
+            
+        token = jwt.encode(
+            {
+            'uid' : person.uid,
+            'exp' : datetime.utcnow() + timedelta(minutes = 5)
+            },
+            key = current_app.config['SECRET_KEY'],
+            algorithm = 'HS512',
+        )
+
+        return {
+            'token'   : token,
+            'code'    : 200,
+            'person' : person.name +" "+ person.last_name
+        }
