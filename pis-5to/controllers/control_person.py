@@ -24,13 +24,15 @@ class PersonaControl():
           return -8
         else:  
 
+            hash_password = generate_password_hash(data['password'], method='sha256')
+            
             persona = Person()
             persona.uid = uuid.uuid4()
             persona.name = data['name'] 
             persona.dni = data['dni']
             persona.last_name = data['last_name']
             persona.email = data['email']
-            persona.password = data['password']
+            persona.password = hash_password
             persona.status = True
 
             Base.session.add(persona)
@@ -109,11 +111,13 @@ class PersonaControl():
     def login(values):
             
         person = Person.query.filter_by(email = values['email']).first()
+
+        pass_unhash = check_password_hash(person.password , values['password'])
             
         if not person:
             return {'msg': 'error', 'code' : 400, 'data': {'error' : Errors.error[str(-11)]}}
             
-        if person.password != values['password']:
+        if not pass_unhash:
             return {'msg': 'error', 'code' : 400, 'data': {'error' : Errors.error[str(-11)]}}
             
         token = jwt.encode(
