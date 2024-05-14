@@ -12,7 +12,7 @@ personaC = PersonaControl()
 
 
 @api_persona.route('/persona')
-@required_token
+@token_required
 def home():
     return make_response(
         jsonify({"msg" : "OK", "code" : 200, "datos" : ([i.serialize for i in personaC.listar()])}), 
