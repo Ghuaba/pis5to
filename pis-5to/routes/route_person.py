@@ -4,7 +4,7 @@ from controllers.control_person import PersonaControl
 from routes.schemas.schameas_person import save_person, edit_person, edit_person_email
 from routes.schemas.schemes_auth import schema_login
 from controllers.utils.errors import Errors
-from controllers.auth import required_token
+from controllers.auth import token_required
 
 api_persona = Blueprint('api_persona_persona', __name__)
 
@@ -38,7 +38,7 @@ def guardar_persona():
 
 
 @api_persona.route('/persona/modificar/<external_id_persona>' , methods = ["POST"])
-@required_token
+@token_required
 @expects_json(edit_person)
 def modificar_persona(external_id_persona):
     data = request.json 
@@ -55,7 +55,7 @@ def modificar_persona(external_id_persona):
     )
 
 @api_persona.route('/persona/modificar/correo/<external_id_persona>' , methods = ["POST"])
-@required_token
+@token_required
 @expects_json(edit_person_email)
 def modificar_correo_persona(external_id_persona):
     data = request.json 
@@ -72,7 +72,7 @@ def modificar_correo_persona(external_id_persona):
     )
 
 @api_persona.route('/persona/buscar/<cedula>' , methods = ["GET"])
-@required_token
+@token_required
 def buscar_persona(cedula):
     persona = personaC.buscarPersona(cedula) 
     if type(persona)==int:
