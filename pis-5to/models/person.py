@@ -15,7 +15,7 @@ class Person(Base.Model):
     dni       = Base.Column(Base.String(10), nullable = False, unique = True)
     last_name = Base.Column(Base.String(50), nullable = False)
     email     = Base.Column(Base.String(250), nullable = False, unique = True)
-    password  = Base.Column(Base.String(30), nullable = False)
+    password  = Base.Column(Base.String(150), nullable = False)
     status    = Base.Column(Base.Boolean, nullable = False)
     
     # audit fields
