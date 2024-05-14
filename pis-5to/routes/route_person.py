@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, make_response, request
 from flask_expects_json import expects_json
 from controllers.control_person import PersonaControl
 from routes.schemas.schameas_person import save_person, edit_person, edit_person_email
+from routes.schemas.schemes_auth import schema_login
 from controllers.utils.errors import Errors
 
 api_persona = Blueprint('api_persona_persona', __name__)
@@ -98,3 +99,14 @@ def cambiar_estadoPersona(external_id):
                 jsonify({"msg" : "ERROR", "code" : 400, "datos" :{"error" : Errors.error[str(id)]}}), 
                 400
     )
+
+@api_persona.route('/login', methods = ['POST'])
+@expects_json(schema_login)
+def login():
+
+    values = request.json
+
+    response = personaC.login(values = values)
+
+    return make_response(jsonify(response), response['code'])
+    
