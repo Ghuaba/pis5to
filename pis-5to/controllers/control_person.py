@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from flask import current_app
 from .utils.errors import Errors
 from werkzeug.security import generate_password_hash, check_password_hash
+import re
 
 class PersonaControl():
 
