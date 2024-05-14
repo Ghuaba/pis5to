@@ -29,7 +29,7 @@ class PersonaControl():
         elif not re.match(r'^[a-zA-Z0-9._%+-]+@unl\.edu\.ec$', data['email']):
             return -3 
         else:  
-            hash_password = generate_password_hash(data['password'], method='sha256')
+            hash_password = generate_password_hash(data['password'], method='pbkdf2:sha256')
             
             persona = Person()
             persona.uid = uuid.uuid4()
