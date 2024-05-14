@@ -5,7 +5,7 @@ from controllers.utils.errors import Errors
 from controllers.controller_monitoring import ControllerMonitoring
 from .schemas.schemas_monitoring import schema
 from datetime import datetime
-
+from controllers.auth import token_required
 
 url_monitoring = Blueprint('url_monitoring', __name__)
 
@@ -14,6 +14,7 @@ monitoringC = ControllerMonitoring()
 
 #sirve para listar todos los monitores existentes 
 @url_monitoring.route('/monitoring/list')
+@token_required
 def listMonitoring():
     return make_response(
         jsonify({"msg" : "OK", "code" : 200, "datos" : ([i.serialize for i in monitoringC.list()])}), 
@@ -24,6 +25,7 @@ def listMonitoring():
 
 #sirve para listar monitoreos con base a un intervalo de fecha 
 @url_monitoring.route('/monitoring/list/date', methods=['GET'])
+@token_required
 def list_monitoring_within_date_range():
     data = request.json
     
@@ -43,6 +45,7 @@ def list_monitoring_within_date_range():
 
 #sirve para listar monitoreos con base a un intervalo de fecha y ademas un iteravalo de coordenadas 
 @url_monitoring.route('/monitoring/list/date/location', methods=['GET'])
+@token_required
 def list_monitoring_within_date_and_location():
     data = request.json
     
@@ -58,6 +61,7 @@ def list_monitoring_within_date_and_location():
 
 #sirve para guardar monitoreso
 @url_monitoring.route('/monitoring/save', methods = ["POST"])
+@token_required
 @expects_json(schema)
 def saveMonitoring():
     data = request.json  # Supongamos que recibes los datos en formato JSON
@@ -75,6 +79,7 @@ def saveMonitoring():
     
 #sirve para modifiacar monitreos ya existentes
 @url_monitoring.route('/monitoring/modify/<uid>', methods=["POST"])
+@token_required
 @expects_json(schema)
 def modifyMonitoring(uid):
     data = request.json
