@@ -81,7 +81,7 @@ class PersonaControl():
         else:
             return -1
         
-    def buscarPersona(delf, cedula):
+    def buscarPersona(self, cedula):
         persona = Person.query.filter_by(dni=cedula).first()
         if persona:
             info = {
@@ -113,7 +113,7 @@ class PersonaControl():
             return -1   
         
     
-    def login(values):
+    def login(self, values):
             
         person = Person.query.filter_by(email = values['email']).first()
 
