@@ -23,8 +23,11 @@ class PersonaControl():
             return -7
         elif len(data['dni']) > 10:
           return -8
+        elif not data['email'].endswith('@unl.edu.ec'):
+            return -3
+        elif not re.match(r'^[a-zA-Z0-9._%+-]+@unl\.edu\.ec$', data['email']):
+            return -3 
         else:  
-
             hash_password = generate_password_hash(data['password'], method='sha256')
             
             persona = Person()
