@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, make_response, request
 from flask_expects_json import expects_json
 from controllers.utils.errors import Errors
 from controllers.controller_monitoring import ControllerMonitoring
-from .schemas.schemas_monitoring import schema
+from .schemas.schemas_monitoring import schema_save
 from datetime import datetime
 from controllers.auth import token_required
 
