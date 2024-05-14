@@ -3,6 +3,7 @@ from controllers.controller_sensor import ControllerSensor
 from .schemas.schemas_sensor import schema_save_sensor
 from .schemas.schemas_sensor import schema_modify_sensor
 from .schemas.schemas_sensor import schema_modify_Status_sensor
+from controller.auth import token_required
 
 from flask_expects_json import expects_json
 from controllers.utils.errors import Errors
@@ -19,6 +20,7 @@ def lista_sensor():
     )
     
 @url_sensor.route('/saveSensor', methods = ["POST"])
+@token_required
 @expects_json(schema_save_sensor)
 def save_sensor():
     data = request.json  
@@ -35,6 +37,7 @@ def save_sensor():
         )
         
 @url_sensor.route('/modifySensor/<uid>', methods = ["POST"])
+@token_required
 @expects_json(schema_modify_sensor)
 def modifySensor(uid):
     data = request.json  
@@ -52,6 +55,7 @@ def modifySensor(uid):
     
     
 @url_sensor.route('/search/<uid>')
+@token_required
 def search_by_uid(uid):
     sensor = sensorC.search_sensor_by_uid(uid).serialize
     if sensor:  
@@ -67,6 +71,7 @@ def search_by_uid(uid):
         
 
 @url_sensor.route('/searchName/<name>') #SE ENVIA EL NOMBRE SIN COMILLAS
+@token_required
 def search_by_name(name):
     sensor = sensorC.search_sensor_by_name(name).serialize
     if sensor:  
@@ -81,6 +86,7 @@ def search_by_name(name):
         )
         
 @url_sensor.route('/modify_status_Sensor/<uid>', methods=["POST"])
+@token_required
 @expects_json(schema_modify_Status_sensor) #enviando json con el uid para que se pueda cambiar el estado
 def modify_status_Sensor(uid):
     c = sensorC.change_status(uid)
