@@ -1,93 +1,114 @@
-from flask import Blueprint, jsonify, make_response, request
-#from controllers.utils.errors import Errors
-from flask_expects_json import expects_json
-from controllers.utils.errors import Errors
-from controllers.controller_monitoring import ControllerMonitoring
-from .schemas.schemas_monitoring import schema
-from datetime import datetime
+from models.monitoring import Monitoring
+from flask import current_app
+from models.monitoring import Monitoring
+from models.sensor import Sensor
+from sqlalchemy import and_
+import uuid
+from app import Base
+import jwt
+from datetime import datetime, timedelta
 
+class ControllerMonitoring:
 
-url_monitoring = Blueprint('url_monitoring', __name__)
-
-
-monitoringC = ControllerMonitoring()
-
-#sirve para listar todos los monitores existentes 
-@url_monitoring.route('/monitoring/list')
-def listMonitoring():
-    return make_response(
-        jsonify({"msg" : "OK", "code" : 200, "datos" : ([i.serialize for i in monitoringC.list()])}), 
-
-        200
-    )
-
-
-#sirve para listar monitoreos con base a un intervalo de fecha 
-@url_monitoring.route('/monitoring/list/date', methods=['GET'])
-def list_monitoring_within_date_range():
-    data = request.json
+    def list(self):
+        return Monitoring.query.all()
     
-    if data and 'start_date' in data and 'end_date' in data:
-        start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
-        end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
+    def list_within_date_range(self, data):
+        start_date = datetime.strptime(data.get('start_date'), "%Y-%m-%d")
+        end_date = datetime.strptime(data.get('end_date'), "%Y-%m-%d")
+        return Monitoring.query.filter(and_(Monitoring.start_date >= start_date, Monitoring.end_date <= end_date)).all()
+
+    def list_within_date_range(self, data):
+        start_date = datetime.strptime(data.get('start_date'), "%Y-%m-%d")
+        end_date = datetime.strptime(data.get('end_date'), "%Y-%m-%d")
+        min_latitude = data.get('min_latitude')
+        max_latitude = data.get('max_latitude')
+        min_longitude = data.get('min_longitude')
+        max_longitude = data.get('max_longitude')
         
-        controller = ControllerMonitoring()
-        monitoring_within_range = controller.list_within_date_range(data)
-        return make_response(jsonify({"msg": "OK", "code": 200, "datos": [monitoring.serialize for monitoring in monitoring_within_range]}), 200)
-    else:
-        return make_response(
-            jsonify({"msg": "ERROR", "code": 400, "datos": {"error": Errors.error.get(str(m))}}),
-            400
-        )
+        query_filters = [
+            Monitoring.start_date >= start_date,
+            Monitoring.end_date <= end_date
+        ]
+        
+        if min_latitude and max_latitude:
+            query_filters.append(and_(Monitoring.latitude >= min_latitude, Monitoring.latitude <= max_latitude))
+            
+        if min_longitude and max_longitude:
+            query_filters.append(and_(Monitoring.longitude >= min_longitude, Monitoring.longitude <= max_longitude))
+        
+        return Monitoring.query.filter(and_(*query_filters)).all()
 
 
-#sirve para listar monitoreos con base a un intervalo de fecha y ademas un iteravalo de coordenadas 
-@url_monitoring.route('/monitoring/list/date/location', methods=['GET'])
-def list_monitoring_within_date_and_location():
-    data = request.json
-    
-    if data and 'start_date' in data and 'end_date' in data:
-        controller = ControllerMonitoring()
-        monitoring_within_range = controller.list_within_date_range(data)
-        return make_response(jsonify({"msg": "OK", "code": 200, "datos": [monitoring.serialize for monitoring in monitoring_within_range]}), 200)
-    else:
-        return make_response(
-            jsonify({"msg": "ERROR", "code": 400, "datos": {"error": Errors.error.get(str(m))}}),
-            400
-        )
+    def save(self, data):
+        monitoring = Monitoring()
 
-#sirve para guardar monitoreso
-@url_monitoring.route('/monitoring/save', methods = ["POST"])
-@expects_json(schema)
-def saveMonitoring():
-    data = request.json  # Supongamos que recibes los datos en formato JSON
-    m = monitoringC.save(data)
-    if m >= 0:
-        return make_response(
-            jsonify({"msg": "OK", "code": 200, "datos": {"tag": "datos guardados"}}),
-            200
-        )
-    else:
-        return make_response(
-            jsonify({"msg": "ERROR", "code": 400, "datos": {"error": Errors.error.get(str(m))}}),
-            400
-        )
+        sensor_uid = data.get("uid") 
+        sensor = Sensor.query.filter_by(uid=sensor_uid).first()
+        
+        if sensor:
+            if data.get("start_date") and data.get("end_date"):
+                start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
+                end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
+                
+                if end_date >= start_date:
+                    monitoring.latitude = data['latitude']
+                    monitoring.longitude = data['longitude']
+                    monitoring.start_date = start_date
+                    monitoring.end_date = end_date
+                    monitoring.data = float(data['data'])  # Convertir data a float
+                    monitoring.uid = uuid.uuid4()
+
+                    monitoring.sensor_id = sensor.id
+                    Base.session.add(monitoring)
+                    Base.session.commit()
+                    return monitoring.id
+                else:
+                    return -1  # La fecha de finalización es anterior a la fecha de inicio
+            else:
+                return -2  # Las fechas no están presentes en los datos
+        else:
+            return -3 # No se encontró el sensor con el uid proporcionado        
+
+
+
+    def modify(self, uid, data):
+        # Recuperar el censo existente de la base de datos utilizando external_id
+        monitoring = Monitoring.query.filter_by(uid = uid).first()
+        
+        if monitoring is None:
+            return -4  # 
+        
+        # Hacer una copia del censo existente
+        new_monitoring = monitoring.copy()
+        
+        sensor_uid = data.get("uid") 
+        sensor = Sensor.query.filter_by(uid=sensor_uid).first()
+                
+        if sensor:
+            if data["start_date"] and data["end_date"]:
+                start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
+                end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
+                        
+                if end_date > start_date:
+                    monitoring.uid = data['uid']
+                    monitoring.latitude = data['latitude']
+                    monitoring.longitude = data['longitude']
+                    monitoring.start_date = data['start_date']
+                    monitoring.end_date = data['end_date']
+                    monitoring.data = data['data']
+                    monitoring.sensor_id = sensor.id
+                    Base.session.merge(monitoring)
+                    Base.session.commit()
+                    return monitoring.id
+
+                else:
+                    return -1  # Código de error para indicar que la fecha de fin no es posterior a la fecha de inicio
+        else:
+            return -5  # Código de error para indicar que no se ingresó fecha de inicio
+
+
     
-#sirve para modifiacar monitreos ya existentes
-@url_monitoring.route('/monitoring/modify/<uid>', methods=["POST"])
-@expects_json(schema)
-def modifyMonitoring(uid):
-    data = request.json
-    result = monitoringC.modify(uid, data)
-    
-    if result >= 0:
-        return make_response(
-            jsonify({"msg": "OK", "code": 200, "datos": {"uid": uid}}),
-            200
-        )
-    else:
-        error_message = Errors.error.get(str(result))
-        return make_response(
-            jsonify({"msg": "ERROR", "code": 400, "datos": {"error": error_message}}),
-            400
-        )
+
+
+

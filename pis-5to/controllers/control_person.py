@@ -1,114 +1,106 @@
-from models.monitoring import Monitoring
-from flask import current_app
-from models.monitoring import Monitoring
-from models.sensor import Sensor
-from sqlalchemy import and_
+from models.person import Person
 import uuid
 from app import Base
 import jwt
 from datetime import datetime, timedelta
+from flask import current_app
 
-class ControllerMonitoring:
+class PersonaControl():
 
-    def list(self):
-        return Monitoring.query.all()
+    def listar(self):
+        return Person.query.all()
     
-    def list_within_date_range(self, data):
-        start_date = datetime.strptime(data.get('start_date'), "%Y-%m-%d")
-        end_date = datetime.strptime(data.get('end_date'), "%Y-%m-%d")
-        return Monitoring.query.filter(and_(Monitoring.start_date >= start_date, Monitoring.end_date <= end_date)).all()
+#guardar una persona ingresando datos
+    def guardarPersona(self, data):
+        correo = Person.query.filter_by(email = data['email']).first()
+        dni = Person.query.filter_by(dni = data['dni']).first()
 
-    def list_within_date_range(self, data):
-        start_date = datetime.strptime(data.get('start_date'), "%Y-%m-%d")
-        end_date = datetime.strptime(data.get('end_date'), "%Y-%m-%d")
-        min_latitude = data.get('min_latitude')
-        max_latitude = data.get('max_latitude')
-        min_longitude = data.get('min_longitude')
-        max_longitude = data.get('max_longitude')
-        
-        query_filters = [
-            Monitoring.start_date >= start_date,
-            Monitoring.end_date <= end_date
-        ]
-        
-        if min_latitude and max_latitude:
-            query_filters.append(and_(Monitoring.latitude >= min_latitude, Monitoring.latitude <= max_latitude))
+        if correo:
+            return -2
+        elif dni:
+            return -7
+        elif len(data['dni']) > 10:
+          return -8
+        else:  
+
+            persona = Person()
+            persona.uid = uuid.uuid4()
+            persona.name = data['name'] 
+            persona.dni = data['dni']
+            persona.last_name = data['last_name']
+            persona.email = data['email']
+            persona.password = data['password']
+            persona.status = True
+
+            Base.session.add(persona)
+            Base.session.commit()
             
-        if min_longitude and max_longitude:
-            query_filters.append(and_(Monitoring.longitude >= min_longitude, Monitoring.longitude <= max_longitude))
-        
-        return Monitoring.query.filter(and_(*query_filters)).all()
+            return persona.id   
 
 
-    def save(self, data):
-        monitoring = Monitoring()
-
-        sensor_uid = data.get("uid") 
-        sensor = Sensor.query.filter_by(uid=sensor_uid).first()
-        
-        if sensor:
-            if data.get("start_date") and data.get("end_date"):
-                start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
-                end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
-                
-                if end_date >= start_date:
-                    monitoring.latitude = data['latitude']
-                    monitoring.longitude = data['longitude']
-                    monitoring.start_date = start_date
-                    monitoring.end_date = end_date
-                    monitoring.data = float(data['data'])  # Convertir data a float
-                    monitoring.uid = uuid.uuid4()
-
-                    monitoring.sensor_id = sensor.id
-                    Base.session.add(monitoring)
-                    Base.session.commit()
-                    return monitoring.id
-                else:
-                    return -1  # La fecha de finalización es anterior a la fecha de inicio
+    def modificarPersona(self, uid, data):
+        persona = Person.query.filter_by(uid=uid).first()
+        if persona:
+            dni = Person.query.filter_by(dni = data['dni']).first()
+            if dni:
+                return -2
+            elif len(data['dni']) > 10:
+                return -8
             else:
-                return -2  # Las fechas no están presentes en los datos
+                persona.uid = uuid.uuid4()
+                persona.name = data['name'] 
+                persona.dni = data['dni']
+                persona.last_name = data['last_name']
+                Base.session.merge(persona)
+                Base.session.commit()
+                return persona.id
         else:
-            return -3 # No se encontró el sensor con el uid proporcionado        
-
-
-
-    def modify(self, uid, data):
-        # Recuperar el censo existente de la base de datos utilizando external_id
-        monitoring = Monitoring.query.filter_by(uid = uid).first()
+            return -1
         
-        if monitoring is None:
-            return -4  # 
+    def modificarCorreoPersona(self, uid, data):
+        persona = Person.query.filter_by(uid=uid).first()
+        if persona:
+            correo = Person.query.filter_by(email = data['email']).first()
+            if correo:
+                return -2
+            else:
+                persona.uid = uuid.uuid4()
+                persona.email = data['email'] 
+                persona.password = data['password']  
+                Base.session.merge(persona)
+                Base.session.commit()
+                return persona.id
+        else:
+            return -1
         
-        # Hacer una copia del censo existente
-        new_monitoring = monitoring.copy()
+    def buscarPersona(delf, cedula):
+        persona = Person.query.filter_by(dni=cedula).first()
+        if persona:
+            info = {
+                "name": persona.name,
+                "dni": persona.dni,
+                "last_name": persona.last_name
+            }
+            return info
+        else:
+            return -1
         
-        sensor_uid = data.get("uid") 
-        sensor = Sensor.query.filter_by(uid=sensor_uid).first()
-                
-        if sensor:
-            if data["start_date"] and data["end_date"]:
-                start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
-                end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
-                        
-                if end_date > start_date:
-                    monitoring.uid = data['uid']
-                    monitoring.latitude = data['latitude']
-                    monitoring.longitude = data['longitude']
-                    monitoring.start_date = data['start_date']
-                    monitoring.end_date = data['end_date']
-                    monitoring.data = data['data']
-                    monitoring.sensor_id = sensor.id
-                    Base.session.merge(monitoring)
-                    Base.session.commit()
-                    return monitoring.id
-
+    def cambiar_estado_persona(self, uid):
+        persona = Person.query.filter_by(uid=uid).first()
+        if persona:
+            try:
+                persona.uid = uuid.uuid4()
+                if persona.status:
+                    persona.status = False
+                    id = 1
                 else:
-                    return -1  # Código de error para indicar que la fecha de fin no es posterior a la fecha de inicio
+                    persona.status = True
+                    id = 2
+                Base.session.merge(persona)
+                Base.session.commit()
+                return id
+            except:
+                return -1
         else:
-            return -5  # Código de error para indicar que no se ingresó fecha de inicio
-
-
-    
-
-
-
+            return -1   
+        
