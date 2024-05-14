@@ -3,7 +3,7 @@ from controllers.controller_sensor import ControllerSensor
 from .schemas.schemas_sensor import schema_save_sensor
 from .schemas.schemas_sensor import schema_modify_sensor
 from .schemas.schemas_sensor import schema_modify_Status_sensor
-from controller.auth import token_required
+from controllers.auth import token_required
 
 from flask_expects_json import expects_json
 from controllers.utils.errors import Errors
