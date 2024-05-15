@@ -62,7 +62,7 @@ def list_monitoring_within_date_and_location():
 #sirve para guardar monitoreso
 @url_monitoring.route('/monitoring/save', methods = ["POST"])
 @token_required
-@expects_json(schema)
+@expects_json(schema_save)
 def saveMonitoring():
     data = request.json  # Supongamos que recibes los datos en formato JSON
     m = monitoringC.save(data)
@@ -80,7 +80,7 @@ def saveMonitoring():
 #sirve para modifiacar monitreos ya existentes
 @url_monitoring.route('/monitoring/modify/<uid>', methods=["POST"])
 @token_required
-@expects_json(schema)
+@expects_json(schema_save)
 def modifyMonitoring(uid):
     data = request.json
     result = monitoringC.modify(uid, data)

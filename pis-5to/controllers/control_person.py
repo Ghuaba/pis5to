@@ -37,7 +37,7 @@ class PersonaControl():
             persona.dni = data['dni']
             persona.last_name = data['last_name']
             persona.email = data['email']
-            persona.password = hash_password
+            persona.password = data['password']
             persona.status = True
 
             Base.session.add(persona)
