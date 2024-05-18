@@ -49,7 +49,7 @@ class Sensor(Base.Model):
             element_type = self.element_type,
             status       = self.status,
             ip           = self.ip,
-            
+
         )
     
         return copy_sensor
