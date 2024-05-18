@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime
 
 from app import Base
+from .person_sensor import person_sensor
 
 class Person(Base.Model):
 
@@ -15,7 +16,7 @@ class Person(Base.Model):
     dni       = Base.Column(Base.String(10), nullable = False, unique = True)
     last_name = Base.Column(Base.String(50), nullable = False)
     email     = Base.Column(Base.String(250), nullable = False, unique = True)
-    password  = Base.Column(Base.String(150), nullable = False)
+    password  = Base.Column(Base.String(162), nullable = False)
     status    = Base.Column(Base.Boolean, nullable = False)
     
     # audit fields
@@ -23,7 +24,7 @@ class Person(Base.Model):
     updated_at = Base.Column(Base.DateTime, default = datetime.now, onupdate = datetime.now)
     
     # child relationships
-    sensors = Base.relationship("Sensor", back_populates="person")
+    sensors = Base.relationship('Sensor', secondary = person_sensor, back_populates='people')
     
     # methods
     @property

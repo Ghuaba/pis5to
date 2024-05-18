@@ -3,6 +3,7 @@ from datetime import datetime
 
 from app import Base
 from .element_type import ElementType
+from .person_sensor import person_sensor
 
 class Sensor(Base.Model):
 
@@ -16,7 +17,6 @@ class Sensor(Base.Model):
     element_type = Base.Column(Base.Enum(ElementType), nullable = False)
     status       = Base.Column(Base.Boolean, nullable = False)
     ip           = Base.Column(Base.String(20), nullable = False)
-    person_id    = Base.Column(Base.Integer, Base.ForeignKey('person.id'), nullable = False)
 
     # audit fields
     created_at = Base.Column(Base.DateTime, default = datetime.now)
@@ -24,9 +24,9 @@ class Sensor(Base.Model):
     
     # parent relationships
     monitoring = Base.relationship("Monitoring", back_populates="sensor")
+    people = Base.relationship('Person', secondary = person_sensor, back_populates = 'sensors')
     
     # child relationships
-    person = Base.relationship("Person", back_populates="sensors")
     
     # methods
     @property
