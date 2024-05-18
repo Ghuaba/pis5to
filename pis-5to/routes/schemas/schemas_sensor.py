@@ -21,10 +21,4 @@ schema_modify_sensor = {
     "required": ['ip', 'element_type','name']
 }
 
-schema_modify_Status_sensor = {
-    "type": "object",
-    "properties": {
-        "uid": {"type": "string"}
-    },
-    "required": ["uid"]
-}
+
