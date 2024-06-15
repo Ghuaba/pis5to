@@ -2,7 +2,7 @@ from models.monitoring import Monitoring
 from flask import current_app
 from models.monitoring import Monitoring
 from models.sensor import Sensor
-
+from sqlalchemy import and_
 import uuid
 from app import Base
 import jwt
@@ -13,6 +13,32 @@ class ControllerMonitoring:
     def list(self):
         return Monitoring.query.all()
     
+    def list_within_date_range(self, data):
+        start_date = datetime.strptime(data.get('start_date'), "%Y-%m-%d")
+        end_date = datetime.strptime(data.get('end_date'), "%Y-%m-%d")
+        return Monitoring.query.filter(and_(Monitoring.start_date >= start_date, Monitoring.end_date <= end_date)).all()
+
+    def list_within_date_range(self, data):
+        start_date = datetime.strptime(data.get('start_date'), "%Y-%m-%d")
+        end_date = datetime.strptime(data.get('end_date'), "%Y-%m-%d")
+        min_latitude = data.get('min_latitude')
+        max_latitude = data.get('max_latitude')
+        min_longitude = data.get('min_longitude')
+        max_longitude = data.get('max_longitude')
+        
+        query_filters = [
+            Monitoring.start_date >= start_date,
+            Monitoring.end_date <= end_date
+        ]
+        
+        if min_latitude and max_latitude:
+            query_filters.append(and_(Monitoring.latitude >= min_latitude, Monitoring.latitude <= max_latitude))
+            
+        if min_longitude and max_longitude:
+            query_filters.append(and_(Monitoring.longitude >= min_longitude, Monitoring.longitude <= max_longitude))
+        
+        return Monitoring.query.filter(and_(*query_filters)).all()
+
 
     def save(self, data):
         monitoring = Monitoring()
@@ -25,7 +51,7 @@ class ControllerMonitoring:
                 start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
                 end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
                 
-                if end_date > start_date:
+                if end_date >= start_date:
                     monitoring.latitude = data['latitude']
                     monitoring.longitude = data['longitude']
                     monitoring.start_date = start_date
@@ -51,14 +77,13 @@ class ControllerMonitoring:
         monitoring = Monitoring.query.filter_by(uid = uid).first()
         
         if monitoring is None:
-            return -4  # Código de error para indicar que no se encontró el censo
+            return -4  # 
         
         # Hacer una copia del censo existente
         new_monitoring = monitoring.copy()
         
-        # Verificar si el motivo ya existe
         sensor_uid = data.get("uid") 
-        sensor = Sensor.query.filter_by(external_id=sensor_uid).first()
+        sensor = Sensor.query.filter_by(uid=sensor_uid).first()
                 
         if sensor:
             if data["start_date"] and data["end_date"]:
@@ -78,9 +103,9 @@ class ControllerMonitoring:
                     return monitoring.id
 
                 else:
-                    return -5  # Código de error para indicar que la fecha de fin no es posterior a la fecha de inicio
+                    return -1  # Código de error para indicar que la fecha de fin no es posterior a la fecha de inicio
         else:
-            return -6  # Código de error para indicar que no se ingresó fecha de inicio
+            return -5  # Código de error para indicar que no se ingresó fecha de inicio
 
 
     

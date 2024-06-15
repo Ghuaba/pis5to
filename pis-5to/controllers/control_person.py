@@ -4,6 +4,9 @@ from app import Base
 import jwt
 from datetime import datetime, timedelta
 from flask import current_app
+from .utils.errors import Errors
+from werkzeug.security import generate_password_hash, check_password_hash
+import re
 
 class PersonaControl():
 
@@ -20,16 +23,21 @@ class PersonaControl():
         elif dni:
             return -42
         elif len(data['dni']) > 10:
-          return -42
+          return -8
+        elif not data['email'].endswith('@unl.edu.ec'):
+            return -3
+        elif not re.match(r'^[a-zA-Z0-9._%+-]+@unl\.edu\.ec$', data['email']):
+            return -3 
         else:  
-
+            hash_password = generate_password_hash(data['password'])
+            
             persona = Person()
             persona.uid = uuid.uuid4()
             persona.name = data['name'] 
             persona.dni = data['dni']
             persona.last_name = data['last_name']
             persona.email = data['email']
-            persona.password = data['password']
+            persona.password = hash_password
             persona.status = True
 
             Base.session.add(persona)
@@ -73,7 +81,7 @@ class PersonaControl():
         else:
             return -40
         
-    def buscarPersona(delf, cedula):
+    def buscarPersona(self, cedula):
         persona = Person.query.filter_by(dni=cedula).first()
         if persona:
             info = {
@@ -104,3 +112,30 @@ class PersonaControl():
         else:
             return -40
         
+    
+    def login(self, values):
+            
+        person = Person.query.filter_by(email = values['email']).first()
+
+        pass_unhash = check_password_hash(person.password , values['password'])
+            
+        if not person:
+            return {'msg': 'error', 'code' : 400, 'data': {'error' : Errors.error[str(-11)]}}
+            
+        if not pass_unhash:
+            return {'msg': 'error', 'code' : 400, 'data': {'error' : Errors.error[str(-11)]}}
+            
+        token = jwt.encode(
+            {
+            'uid' : person.uid,
+            'exp' : datetime.utcnow() + timedelta(minutes = 5)
+            },
+            key = current_app.config['SECRET_KEY'],
+            algorithm = 'HS512',
+        )
+
+        return {
+            'token'   : token,
+            'code'    : 200,
+            'person' : person.name +" "+ person.last_name
+        }

@@ -30,11 +30,11 @@ class Monitoring(Base.Model):
     @property
     def serialize(self):
         return {
-            'longitude'  : self.uid,
-            'latitude'   : self.dni,
-            'start_date' : self.name,
-            'end_date'   : self.last_name,
-            'data'       : self.email,
+            'longitude'  : self.longitude,
+            'latitude'   : self.latitude,
+            'start_date' : self.start_date,
+            'end_date'   : self.end_date,
+            'data'       : self.data,
         }
     
     def copy(self):
@@ -47,7 +47,8 @@ class Monitoring(Base.Model):
             start_date = self.start_date,
             end_date   = self.end_date,
             data       = self.data,
-            sendor_id  = self.sensor_id,
+            sensor_id  = self.sensor_id,
         )
     
         return copy_monitoring
+    

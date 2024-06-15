@@ -12,7 +12,10 @@ class Errors:
         '-11': "No existe la persona",
         '-12': "No existe el sensor solicitado",
         '-13': "No existe cuenta",
+        '-16': "LA IP NO ES VALIDA",
+
         '-14': "No tiene el token",
+<<<<<<< HEAD
         '-15': "Token no valido",
 
 
@@ -22,4 +25,7 @@ class Errors:
         "-42": "Longitud de DNI mayor a 10",
         
         
+=======
+        '-15': "Token no valido"
+>>>>>>> origin
     }

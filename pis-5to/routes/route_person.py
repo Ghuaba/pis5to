@@ -2,7 +2,9 @@ from flask import Blueprint, jsonify, make_response, request
 from flask_expects_json import expects_json
 from controllers.control_person import PersonaControl
 from routes.schemas.schameas_person import save_person, edit_person, edit_person_email
+from routes.schemas.schemes_auth import schema_login
 from controllers.utils.errors import Errors
+from controllers.auth import token_required
 
 api_persona = Blueprint('api_persona_persona', __name__)
 
@@ -10,6 +12,7 @@ personaC = PersonaControl()
 
 
 @api_persona.route('/persona')
+@token_required
 def home():
     return make_response(
         jsonify({"msg" : "OK", "code" : 200, "datos" : ([i.serialize for i in personaC.listar()])}), 
@@ -35,6 +38,7 @@ def guardar_persona():
 
 
 @api_persona.route('/persona/modificar/<external_id_persona>' , methods = ["POST"])
+@token_required
 @expects_json(edit_person)
 def modificar_persona(external_id_persona):
     data = request.json 
@@ -51,6 +55,7 @@ def modificar_persona(external_id_persona):
     )
 
 @api_persona.route('/persona/modificar/correo/<external_id_persona>' , methods = ["POST"])
+@token_required
 @expects_json(edit_person_email)
 def modificar_correo_persona(external_id_persona):
     data = request.json 
@@ -67,6 +72,7 @@ def modificar_correo_persona(external_id_persona):
     )
 
 @api_persona.route('/persona/buscar/<cedula>' , methods = ["GET"])
+@token_required
 def buscar_persona(cedula):
     persona = personaC.buscarPersona(cedula) 
     if type(persona)==int:
@@ -98,3 +104,14 @@ def cambiar_estadoPersona(external_id):
                 jsonify({"msg" : "ERROR", "code" : 400, "datos" :{"error" : Errors.error[str(id)]}}), 
                 400
     )
+
+@api_persona.route('/login', methods = ['POST'])
+@expects_json(schema_login)
+def login():
+
+    values = request.json
+
+    response = personaC.login(values = values)
+
+    return make_response(jsonify(response), response['code'])
+    
