@@ -10,11 +10,11 @@ import re
 
 class PersonaControl():
 
-    def listar(self):
+    def list(self):
         return Person.query.all()
     
 #guardar una persona ingresando datos
-    def guardarPersona(self, data):
+    def savePerson(self, data):
         correo = Person.query.filter_by(email = data['email']).first()
         dni = Person.query.filter_by(dni = data['dni']).first()
 
@@ -29,7 +29,7 @@ class PersonaControl():
         elif not re.match(r'^[a-zA-Z0-9._%+-]+@unl\.edu\.ec$', data['email']):
             return -3 
         else:  
-            hash_password = generate_password_hash(data['password'])
+            hash_password = data['password']#generate_password_hash(data['password'])
             
             persona = Person()
             persona.uid = uuid.uuid4()
@@ -46,46 +46,44 @@ class PersonaControl():
             return persona.id   
 
 
-    def modificarPersona(self, uid, data):
-        persona = Person.query.filter_by(uid=uid).first()
-        if persona:
-            dni = Person.query.filter_by(dni = data['dni']).first()
-            if dni:
-                return -41
-            elif len(data['dni']) > 10:
-                return -42
-            else:
-                persona.uid = uuid.uuid4()
-                persona.name = data['name'] 
-                persona.dni = data['dni']
-                persona.last_name = data['last_name']
-                Base.session.merge(persona)
-                Base.session.commit()
-                return persona.id
+    def modifyPerson(self, data):
+        uid = data['external']
+        tem_persona = Person.query.filter_by(uid=uid).first()
+        if tem_persona:
+            persona = Person()
+            persona = tem_persona.copy()
+            persona.uid = uuid.uuid4()
+            persona.name = data['name']
+            persona.last_name = data['last_name']
+            Base.session.merge(persona)
+            Base.session.commit()
+            return persona.id
         else:
             return -40
         
-    def modificarCorreoPersona(self, uid, data):
-        persona = Person.query.filter_by(uid=uid).first()
+    def modifyPersonalEmail(self, data):
+        persona = Person.query.filter_by(uid=data['external']).first()
         if persona:
             correo = Person.query.filter_by(email = data['email']).first()
             if correo:
                 return -41
             else:
-                persona.uid = uuid.uuid4()
-                persona.email = data['email'] 
-                persona.password = data['password']  
-                Base.session.merge(persona)
+                temp_persona = persona.copy()
+                temp_persona.uid = uuid.uuid4()
+                temp_persona.email = data['email'] 
+                temp_persona.password = data['password']  
+                Base.session.merge(temp_persona)
                 Base.session.commit()
-                return persona.id
+                return temp_persona.id
         else:
             return -40
         
-    def buscarPersona(self, cedula):
-        persona = Person.query.filter_by(dni=cedula).first()
+    def searchPersonByDni(self, dni):
+        persona = Person.query.filter_by(dni=dni).first()
         if persona:
             info = {
                 "name": persona.name,
+                "email": persona.email,
                 "dni": persona.dni,
                 "last_name": persona.last_name
             }
@@ -93,7 +91,20 @@ class PersonaControl():
         else:
             return -40
         
-    def cambiar_estado_persona(self, uid):
+    def searchPersonByUid(self, uid):
+        persona = Person.query.filter_by(uid=uid).first()
+        if persona:
+            info = {
+                "name": persona.name,
+                "email": persona.email,
+                "dni": persona.dni,
+                "last_name": persona.last_name
+            }
+            return info
+        else:
+            return -40  
+        
+    def changeStatePerson(self, uid):
         persona = Person.query.filter_by(uid=uid).first()
         if persona:
             try:

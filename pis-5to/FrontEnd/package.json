@@ -9,9 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.6.0",
+    "axios": "^1.7.2",
+    "bootstrap": "^5.3.3",
+    "js-cookie": "^3.0.5",
+    "js-cookies": "^1.0.4",
+    "mdb-react-ui-kit": "^8.0.0",
+    "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.4"
+    "swap": "^0.0.3",
+    "sweetalert": "^2.1.2",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "postcss": "^8",

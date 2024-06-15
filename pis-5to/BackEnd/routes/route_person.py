@@ -11,7 +11,7 @@ api_persona = Blueprint('api_persona_persona', __name__)
 personaC = PersonaControl()
 
 
-@api_persona.route('/persona')
+@api_persona.route('/person')
 @token_required
 def home():
     return make_response(
@@ -20,11 +20,11 @@ def home():
     )
 
 
-@api_persona.route('/persona/guardar'   , methods = ["POST"])
+@api_persona.route('/person/save'   , methods = ["POST"])
 @expects_json(save_person)
-def guardar_persona():
+def save_person():
     data = request.json 
-    id = personaC.guardarPersona(data = data)
+    id = personaC.savePerson(data = data)
     if(id >= 0):
         return make_response(
                 jsonify({"msg" : "OK", "code" : 200, "datos" : {"tag" : "datos guardados"}}), 
@@ -37,12 +37,12 @@ def guardar_persona():
     )
 
 
-@api_persona.route('/persona/modificar/<external_id_persona>' , methods = ["POST"])
-@token_required
+@api_persona.route('/person/modify' , methods = ["POST"])
+#@token_required
 @expects_json(edit_person)
-def modificar_persona(external_id_persona):
+def modify_person():
     data = request.json 
-    id = personaC.modificarPersona(external_id_persona, data = data)
+    id = personaC.modifyPerson(data = data)
     if(id >= 0):
         return make_response(
                 jsonify({"msg" : "OK", "code" : 200, "datos" : {"tag" : "datos guardados"}}), 
@@ -54,12 +54,12 @@ def modificar_persona(external_id_persona):
                 400
     )
 
-@api_persona.route('/persona/modificar/correo/<external_id_persona>' , methods = ["POST"])
-@token_required
+@api_persona.route('/person/modify/email' , methods = ["POST"])
+#@token_required
 @expects_json(edit_person_email)
-def modificar_correo_persona(external_id_persona):
+def modify_personal_email():
     data = request.json 
-    id = personaC.modificarCorreoPersona(external_id_persona, data = data)
+    id = personaC.modifyPersonalEmail(data = data)
     if(id >= 0):
         return make_response(
                 jsonify({"msg" : "OK", "code" : 200, "datos" : {"tag" : "datos guardados"}}), 
@@ -71,10 +71,10 @@ def modificar_correo_persona(external_id_persona):
                 400
     )
 
-@api_persona.route('/persona/buscar/<cedula>' , methods = ["GET"])
-@token_required
-def buscar_persona(cedula):
-    persona = personaC.buscarPersona(cedula) 
+@api_persona.route('/person/search/dni/<dni>' , methods = ["GET"])
+#@token_required
+def search_person_dni(dni):
+    persona = personaC.searchPersonByDni(dni) 
     if type(persona)==int:
         return make_response(
                 jsonify({"msg" : "ERROR", "code" : 400, "datos" :{"error" : Errors.error[str(persona)]}}), 
@@ -86,9 +86,24 @@ def buscar_persona(cedula):
             200
         )
     
-@api_persona.route('/persona/cambiar_estado/<external_id>' , methods = ["GET"])
-def cambiar_estadoPersona(external_id):
-    id = personaC.cambiar_estado_persona(external_id) 
+@api_persona.route('/person/search/uid/<uid>' , methods = ["GET"])
+#@token_required
+def search_person_uid(uid):
+    persona = personaC.searchPersonByUid(uid) 
+    if type(persona)==int:
+        return make_response(
+                jsonify({"msg" : "ERROR", "code" : 400, "datos" :{"error" : Errors.error[str(persona)]}}), 
+                400
+        )
+    else:
+        return make_response(
+            jsonify({"msg" : "OK", "code" : 200, "datos" : (persona)}), 
+            200
+        )
+    
+@api_persona.route('/person/change_state/<external_id>' , methods = ["GET"])
+def change_state_person(external_id):
+    id = personaC.changeStatePerson(external_id) 
     if(id == 1):
         return make_response(
                 jsonify({"msg" : "OK", "code" : 200, "datos" : {"tag" : "persona desactivada"}}), 
