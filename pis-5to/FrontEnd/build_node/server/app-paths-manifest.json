@@ -1,6 +1,1 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/person/new/page": "app/person/new/page.js",
-  "/person/personal/[external]/page": "app/person/personal/[external]/page.js",
-  "/person/email/[external]/page": "app/person/email/[external]/page.js"
-}
+{}
