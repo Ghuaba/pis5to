@@ -1,0 +1,33 @@
+{
+  "pages": {
+    "/person/new/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/person/new/page.css",
+      "static/chunks/app/person/new/page.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
+    ],
+    "/person/personal/[external]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/person/personal/[external]/page.css",
+      "static/chunks/app/person/personal/[external]/page.js"
+    ],
+    "/person/email/[external]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/person/email/[external]/page.css",
+      "static/chunks/app/person/email/[external]/page.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
+    ]
+  }
+}
