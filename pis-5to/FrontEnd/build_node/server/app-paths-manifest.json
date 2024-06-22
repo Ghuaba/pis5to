@@ -1,1 +1,7 @@
-{}
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/sensor/new/page": "app/sensor/new/page.js",
+  "/sensor/[uid]/page": "app/sensor/[uid]/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/sensor/get/list/page": "app/sensor/get/list/page.js"
+}

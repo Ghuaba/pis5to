@@ -1,6 +1,7 @@
 from app import Base
 from models.sensor import Sensor
 from models.person import Person
+from models.element_type import ElementType
 import uuid
 from app import Base
 import  re
@@ -45,8 +46,8 @@ class ControllerSensor():
 
 
 
-    def modifySensor(self,data, uid):
-        sensor= Sensor.query.filter_by(uid= uid).first()
+    def modifySensor(self,data):
+        sensor= Sensor.query.filter_by(uid= data['uid']).first()
         if sensor is None:
             return -12
         else:
@@ -98,4 +99,7 @@ class ControllerSensor():
             
              
             
+    def list_element(self):
+        return ElementType.list()
+
         

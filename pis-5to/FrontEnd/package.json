@@ -17,6 +17,7 @@
     "mdb-react-ui-kit": "^8.0.0",
     "next": "14.2.4",
     "react": "^18",
+    "react-bootstrap": "^2.10.3",
     "react-dom": "^18",
     "swap": "^0.0.3",
     "sweetalert": "^2.1.2",
