@@ -1,17 +1,17 @@
-import POST from "./Connection";
+import { POST } from "./Connection";
 
-export async function authPerson( data ) {
-    
-  const datos = null;
-    
+export async function authPerson(data) {
+
+  let datos = null;
+
   try {
-    
-      datos = await POST("login", data);
-        
+
+    datos = await POST("login", data);
+
   } catch (error) {
-      return error.data;
+    return error.response.data;
   }
-  
+
   return datos.data;
 
 }
