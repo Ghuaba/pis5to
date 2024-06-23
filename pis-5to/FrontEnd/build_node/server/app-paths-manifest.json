@@ -1,1 +1,4 @@
-{}
+{
+  "/sensor/new/page": "app/sensor/new/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
+}
