@@ -46,17 +46,18 @@ class ControllerSensor():
 
 
 
-    def modifySensor(self,data):
-        sensor= Sensor.query.filter_by(uid= data['uid']).first()
+    def modifySensor(self, data):
+        sensor = Sensor.query.filter_by(uid=data['uid']).first()
         if sensor is None:
             return -12
         else:
             if self.validate_Ip(data['ip']):
-                new_sensor= sensor.copy()
-                new_sensor.name= data.get('name', sensor.name)
-                new_sensor.element_type= data.get('element_type', sensor.element_type)
-                new_sensor.ip= data.get('ip', sensor.ip)
-                new_sensor.uid= uuid.uuid4()
+                new_sensor = sensor.copy()
+                new_sensor.name = data.get('name', sensor.name)
+                new_sensor.element_type = data.get('element_type', sensor.element_type)
+                new_sensor.ip = data.get('ip', sensor.ip)
+                new_sensor.people = sensor.people  # Ensure `sensor.people` is not a set
+                new_sensor.uid = uuid.uuid4()
                 Base.session.merge(new_sensor)
                 Base.session.commit()
                 return new_sensor.id
@@ -84,9 +85,12 @@ class ControllerSensor():
         return new_sensor.id
 
 
-    def search_sensor_by_uid(self, sensor_uid):
-        sensor = Sensor.query.filter_by(uid=sensor_uid).first()
-        return sensor
+    def search_sensor_by_uid(self, uidS):
+        sensor = Sensor.query.filter_by(uid=uidS).first()
+        if sensor:
+            return sensor
+        else:
+            return None
 
     def search_sensor_by_name(self, sensor_name):
         sensor = Sensor.query.filter_by(name=sensor_name).first()

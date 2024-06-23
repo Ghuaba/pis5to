@@ -1,4 +1,9 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/sensor/new/page": "app/sensor/new/page.js",
+  "/session/page": "app/session/page.js",
+  "/person/new/page": "app/person/new/page.js",
+  "/sensor/get/list/page": "app/sensor/get/list/page.js",
+  "/sensor/[uid]/page": "app/sensor/[uid]/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js"
 }

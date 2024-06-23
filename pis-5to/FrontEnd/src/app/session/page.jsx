@@ -30,6 +30,7 @@ export default function login() {
             if (info.code == 200) {
                 Cookies.set('token', info.token)
                 Cookies.set('usuario', info.person);
+                Cookies.set('necesary', info.necesary)
                 swal({
                     title: "Info",
                     text: "Welcome " + info.person,

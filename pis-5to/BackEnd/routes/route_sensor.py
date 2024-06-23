@@ -44,7 +44,7 @@ def modifySensor():
     c = sensorC.modifySensor(data=data)
     if c >= 0:
         return make_response(
-            jsonify({"msg": "DATOS CAMBIADOS CON EXITO", "code": 200, "datos": {"correcto"}}),
+            jsonify({"msg": "DATOS CAMBIADOS CON EXITO", "code": 200, "datos": ["correcto"]}),
             200
         )
     else:
@@ -54,20 +54,16 @@ def modifySensor():
         )
     
     
-@url_sensor.route('/search/<uid>')
-#@token_required
-def search_by_uid(uid):
-    sensor = sensorC.search_sensor_by_uid(uid).serialize
-    if sensor:  
-        return make_response(
-        jsonify({"msg" : "OK", "code" : 200, "datos" : ([sensor])}), 
-            200
-        )
-    else: 
-        return make_response(
-            jsonify({"msg": "ERROR", "code": 400, "datos": {"error": "NO EXISTE"}}),
-            400
-        )
+@url_sensor.route('/search/<uidS>')
+@token_required
+def search_by_uid(uidS):
+    sensor = sensorC.search_sensor_by_uid(uidS=uidS)
+    return make_response(
+        #jsonify({"msg" : "OK", "code" : 200, "datos":personaC.buscarExternal(external).serialize}), 
+        jsonify({"msg" : "OK", "code" : 200, "datos":[] if sensor == None else sensor.serialize}), 
+
+        200
+    )
         
 
 @url_sensor.route('/searchName/<name>') #SE ENVIA EL NOMBRE SIN COMILLAS

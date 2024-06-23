@@ -15,6 +15,9 @@ import { Form, Row, Col, Button } from 'react-bootstrap';
 export default function NewSensor() {
     //const router= useRouter()
     let token = Cookies.get('token');
+    let user = Cookies.get('token');
+    let necesary = Cookies.get('necesary');
+
     const router = useRouter();
     let [element, setelement] = useState(null);
     let [estado, setEstado] = useState(false);
@@ -45,7 +48,7 @@ export default function NewSensor() {
         //data.fecha_nac = new Date(data.fecha_nac).toISOString().split('T')[0];
 
         //console.log(data.fecha_nac)
-
+        data.person= necesary
         save_sensor(data, token).then((info) => {
 
             if (info.code == 200) {

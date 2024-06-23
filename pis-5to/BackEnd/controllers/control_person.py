@@ -146,5 +146,6 @@ class PersonaControl():
         return {
             'token'   : token,
             'code'    : 200,
-            'person' : person.name +" "+ person.last_name
+            'person' : person.name +" "+ person.last_name,
+            'necesary': person.uid
         }

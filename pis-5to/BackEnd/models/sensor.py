@@ -35,7 +35,7 @@ class Sensor(Base.Model):
             'uid': self.uid,
             'name': self.name,
             'status': self.status,
-            'element_type': str(self.element_type),  # Convertir a cadena
+            'element_type': str(self.element_type),  
             'ip': self.ip,
         }
     
