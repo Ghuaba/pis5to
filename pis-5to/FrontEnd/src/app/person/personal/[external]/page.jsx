@@ -14,11 +14,13 @@ import { useForm } from 'react-hook-form';
 import './signStyle.css';
 import { useRouter } from 'next/navigation';
 import swal from 'sweetalert';
-import { modify_person_personal, search_person } from '@/hooks/service_person';
+import { modify_person_personal, search_person } from '../../../../hooks/service_person';
 //para llenar datos dentro de los let [estado, setEstado]
 import { useState } from 'react';
+import Cookies from 'js-cookie';
 
 export default function modifyPersonalPerson({params}) {
+    const token = Cookies.get('token');
     const router = useRouter();
 
     //datos del usuario
@@ -26,9 +28,19 @@ export default function modifyPersonalPerson({params}) {
     let [person, setPerson] = useState(null);
 
     if (!estado){
-        search_person(params.external/*, token*/).then((info) => {
+        search_person(params.external, token).then((info) => {
             if(info.code == 200){
                 setPerson(info.datos);
+            }
+            else{
+                swal({
+                    title: "Error",
+                    text: info.response.data.info.error,
+                    icon: "error",
+                    button: "Aceptar",
+                    timer: 8000,
+                    closeOnEsc: true
+                });
             }
         });
         setEstado(true);
@@ -54,7 +66,7 @@ export default function modifyPersonalPerson({params}) {
             "last_name": data.last_name,
             "external": params.external,
         }
-        modify_person_personal(datos/*, token*/).then((info) => {
+        modify_person_personal(datos, token).then((info) => {
             if (info && info.code == '200') {
                 console.log("Datos registrados");
                 console.log(info);
@@ -73,7 +85,7 @@ export default function modifyPersonalPerson({params}) {
             } else {
                 swal({
                     title: "Error",
-                    text: info.error,
+                    text: info.response.data.datos.error,
                     icon: "error",
                     button: "Aceptar",
                     timer: 8000,
