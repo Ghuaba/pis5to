@@ -14,9 +14,12 @@
     import './signStyle.css';
     import { useRouter } from 'next/navigation';
     import swal from 'sweetalert';
-    import { save_person } from '@/hooks/service_person';
+    import { save_person } from '../../../hooks/service_person';
+    import Cookies from 'js-cookie';
 
     export default function newPerson() {
+        const token = Cookies.get('token');
+
         const router = useRouter();
 
         //validación de campos 
@@ -36,7 +39,7 @@
         let { errors } = formState;
 
         const enviar_data = (data) => {
-            save_person(data/*, token*/).then((info) => {
+            save_person(data, token).then((info) => {
                 if (info.code == '200') {
                     console.log("Datos registrados");
                     console.log(info);
@@ -55,7 +58,7 @@
                 } else {
                     swal({
                         title: "Error",
-                        text: info.datos.error,
+                        text: info.response.data.datos.error,
                         icon: "error",
                         button: "Aceptar",
                         timer: 8000,

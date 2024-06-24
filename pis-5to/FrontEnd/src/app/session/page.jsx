@@ -6,7 +6,7 @@ import swal from 'sweetalert';
 import Cookies from 'js-cookie';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { authPerson } from '@/hooks/service_auth';
+import { authPerson } from '../../hooks/service_auth';
 
 
 export default function login() {

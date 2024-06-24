@@ -21,6 +21,7 @@ def home():
 
 
 @api_persona.route('/person/save'   , methods = ["POST"])
+@token_required
 @expects_json(save_person)
 def save_person():
     data = request.json 
@@ -38,7 +39,7 @@ def save_person():
 
 
 @api_persona.route('/person/modify' , methods = ["POST"])
-#@token_required
+@token_required
 @expects_json(edit_person)
 def modify_person():
     data = request.json 
@@ -55,7 +56,7 @@ def modify_person():
     )
 
 @api_persona.route('/person/modify/email' , methods = ["POST"])
-#@token_required
+@token_required
 @expects_json(edit_person_email)
 def modify_personal_email():
     data = request.json 
@@ -72,7 +73,7 @@ def modify_personal_email():
     )
 
 @api_persona.route('/person/search/dni/<dni>' , methods = ["GET"])
-#@token_required
+@token_required
 def search_person_dni(dni):
     persona = personaC.searchPersonByDni(dni) 
     if type(persona)==int:
@@ -87,7 +88,7 @@ def search_person_dni(dni):
         )
     
 @api_persona.route('/person/search/uid/<uid>' , methods = ["GET"])
-#@token_required
+@token_required
 def search_person_uid(uid):
     persona = personaC.searchPersonByUid(uid) 
     if type(persona)==int:
