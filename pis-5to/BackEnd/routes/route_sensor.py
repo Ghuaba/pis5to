@@ -10,7 +10,7 @@ from controllers.utils.errors import Errors
 
 url_sensor = Blueprint('url_sensor', __name__)
 sensorC= ControllerSensor()
-
+@token_required
 @url_sensor.route('/listSensor')
 def lista_sensor():
     return make_response(
@@ -36,15 +36,15 @@ def save_sensor():
             400
         )
         
-@url_sensor.route('/modifySensor/<uid>', methods = ["POST"])
+@url_sensor.route('/modifySensor', methods = ["POST"])
 @token_required
 @expects_json(schema_modify_sensor)
-def modifySensor(uid):
+def modifySensor():
     data = request.json  
-    c = sensorC.modifySensor(data=data, uid=uid)
+    c = sensorC.modifySensor(data=data)
     if c >= 0:
         return make_response(
-            jsonify({"msg": "DATOS CAMBIADOS CON EXITO", "code": 200, "datos": {"external_id": uid}}),
+            jsonify({"msg": "DATOS CAMBIADOS CON EXITO", "code": 200, "datos": ["correcto"]}),
             200
         )
     else:
@@ -54,20 +54,16 @@ def modifySensor(uid):
         )
     
     
-@url_sensor.route('/search/<uid>')
+@url_sensor.route('/search/<uidS>')
 @token_required
-def search_by_uid(uid):
-    sensor = sensorC.search_sensor_by_uid(uid).serialize
-    if sensor:  
-        return make_response(
-        jsonify({"msg" : "OK", "code" : 200, "datos" : ([sensor])}), 
-            200
-        )
-    else: 
-        return make_response(
-            jsonify({"msg": "ERROR", "code": 400, "datos": {"error": "NO EXISTE"}}),
-            400
-        )
+def search_by_uid(uidS):
+    sensor = sensorC.search_sensor_by_uid(uidS=uidS)
+    return make_response(
+        #jsonify({"msg" : "OK", "code" : 200, "datos":personaC.buscarExternal(external).serialize}), 
+        jsonify({"msg" : "OK", "code" : 200, "datos":[] if sensor == None else sensor.serialize}), 
+
+        200
+    )
         
 
 @url_sensor.route('/searchName/<name>') #SE ENVIA EL NOMBRE SIN COMILLAS
@@ -100,3 +96,12 @@ def modify_status_Sensor(uid):
             jsonify({"msg": "ERROR", "code": 400, "datos": {"error": Errors.error.get(str(c))}}),
             400
         )
+
+@token_required
+@url_sensor.route('/get/elements')
+def list_allElements():
+    return make_response(
+        jsonify({"msg" : "OK", "code" : 200, "datos" : sensorC.list_element()}), 
+        200
+    )
+

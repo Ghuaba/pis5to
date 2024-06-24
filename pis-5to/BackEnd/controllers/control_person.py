@@ -127,13 +127,11 @@ class PersonaControl():
     def login(self, values):
             
         person = Person.query.filter_by(email = values['email']).first()
-
-        pass_unhash = check_password_hash(person.password , values['password'])
             
         if not person:
             return {'msg': 'error', 'code' : 400, 'data': {'error' : Errors.error[str(-11)]}}
             
-        if not pass_unhash:
+        if person.password != values['password']:
             return {'msg': 'error', 'code' : 400, 'data': {'error' : Errors.error[str(-11)]}}
             
         token = jwt.encode(
@@ -148,5 +146,6 @@ class PersonaControl():
         return {
             'token'   : token,
             'code'    : 200,
-            'person' : person.name +" "+ person.last_name
+            'person' : person.name +" "+ person.last_name,
+            'necesary': person.uid
         }
