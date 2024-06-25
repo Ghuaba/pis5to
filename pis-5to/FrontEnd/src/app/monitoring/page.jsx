@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { list_monitoring } from '@/hooks/Service_monitoring';
+import { list_monitoring } from '@/hooks/service_monitoring';
 import Cookies from 'js-cookie';
 import { useState, useEffect } from "react";
 import swal from 'sweetalert';
