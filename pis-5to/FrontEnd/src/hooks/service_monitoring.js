@@ -3,11 +3,11 @@ import Cookies from "js-cookie";
 
 
 
-export async function list_monitoring(/*token*/) {
+export async function list_monitoring(token) {
     let datos = null;
 
     try {
-        datos = await GET('monitoring/list', /*token*/);
+        datos = await GET('monitoring/list', token);
         console.log("aqui todo bien en listar monitoring");
     } catch (error) {
         console.log("Error en listar_lotes: ", error.response);

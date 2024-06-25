@@ -6,24 +6,24 @@ import { useState, useEffect } from "react";
 import swal from 'sweetalert';
 
 import { useRouter } from 'next/navigation';
-import './styles.css'; // Importar estilos locales
+import './styles.css';
 
 export default function Monitoring() {
 
     const router = useRouter();
     const [persons, setPersons] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(true); // Estado para controlar si está autenticado
+    const [isLoggedIn, setIsLoggedIn] = useState(true); 
     console.log("desde aquiii es ");
 
     useEffect(() => {
-        /*const token = Cookies.get('token');
+        const token = Cookies.get('token');
         if (!token) {
-            setIsLoggedIn(false); // Si no hay token, establece que no está autenticado
+            setIsLoggedIn(false); 
             return;
         }
-        */
+        
 
-        list_monitoring(/*token*/).then((info) => {
+        list_monitoring(token).then((info) => {
             //console.log("aqui va la info" + info.datos);
             if (info.code === 200) {
                 setPersons(info.datos);
@@ -31,10 +31,10 @@ export default function Monitoring() {
                 console.log("mensaje de aqui");
                 console.log(info.datos);
             } else {
-                setIsLoggedIn(false); // Si hay un problema con el token, establece que no está autenticado
+                setIsLoggedIn(false); 
             }
         }).catch(() => {
-            setIsLoggedIn(false); // En caso de error, también establece que no está autenticado
+            setIsLoggedIn(false);
         });
     }, []);
 
@@ -46,7 +46,7 @@ export default function Monitoring() {
         return `${day}/${month}/${year}`;
     }
     
-/*
+
     if (!isLoggedIn) {
         // Redirigir a la página de inicio de sesión si no está autenticado
         swal({
@@ -59,10 +59,10 @@ export default function Monitoring() {
         });
         Cookies.remove('token');
         Cookies.remove('user');
-        router.push('/session'); // Asegúrate de tener la ruta correcta para iniciar sesión
-        return null; // O puedes mostrar un mensaje aquí antes de redirigir
+        router.push('/session'); 
+        return null;
     }
-*/
+
     return (
         <div className="person-page">
             <main className="container text-center mt-5">
