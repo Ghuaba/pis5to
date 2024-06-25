@@ -1,0 +1,95 @@
+/* styles.css */
+
+/* Estilo general para el contenedor principal */
+.person-page {
+    background-color: #f4f6f8;
+    padding: 20px;
+    min-height: 100vh; /* Para asegurarse de que cubre toda la altura de la ventana */
+}
+
+.container-fluid {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón de nuevo registro */
+.btn-new {
+    margin: 10px 0;
+}
+
+/* Tabla de personas */
+.person-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 1px solid #dee2e6;
+}
+
+/* Estilo del encabezado de la tabla */
+.person-table thead {
+    background-color: #007bff; /* Fondo azul para el encabezado */
+    color: #fff; /* Texto blanco para el encabezado */
+}
+
+/* Estilo de las filas y celdas de la tabla */
+.person-table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.person-table tbody tr:hover {
+    background-color: #e0f7fa; /* Fondo celeste claro al pasar el mouse */
+}
+
+.person-table tbody td {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    background-color: #e3f2fd; /* Fondo celeste claro para las celdas */
+    color: #333; /* Color del texto */
+}
+
+/* Estilo para la primera columna (Nro) */
+.person-table tbody td:first-child {
+    background-color: #bbdefb; /* Fondo celeste más oscuro para la primera columna */
+    font-weight: bold; /* Texto en negrita */
+}
+
+/* Botones */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-warning {
+    color: #fff;
+    background-color: #ffc107;
+    border-color: #ffc107;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover, .btn-warning:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+/* Espaciado y alineación */
+.mt-5 {
+    margin-top: 3rem;
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.text-center {
+    text-align: center;
+}

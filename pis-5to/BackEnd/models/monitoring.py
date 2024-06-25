@@ -35,6 +35,8 @@ class Monitoring(Base.Model):
             'start_date' : self.start_date,
             'end_date'   : self.end_date,
             'data'       : self.data,
+            'uid'        : self.uid,   
+            'sensor_id': self.sensor.serialize
         }
     
     def copy(self):
